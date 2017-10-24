@@ -9,12 +9,14 @@ volumes:
     driver: local
 
 services:
+
   rethinkdb:
     image: rethinkdb:2.3
-    ports:
-      - "8080:8080"
-      - "28015:28015"
-      - "29015:29015"
+### Note: Ports do not need to be published external to docker network segment for `stf local` only
+#    ports:
+#      - "8080:8080"
+#      - "28015:28015"
+#      - "29015:29015"
     restart: always
     volumes:
       - "rethink-data:/data"
@@ -25,12 +27,13 @@ services:
   adbd:
     image: sorccu/adb
     privileged: true
-    ports:
-      - "5037:5037"
+### Note: Ports do not need to be published external to docker network segment for `stf local` only
+#    ports:
+#      - "5037:5037"
     restart: always
     volumes:
       - "/dev/bus/usb:/dev/bus/usb"
-  
+
   stf-local:
     image: openstf/stf
     depends_on:
@@ -38,6 +41,7 @@ services:
     links:
       - adbd
     ports:
+      - "80:7105"
       - "5900:5900" # Experimental VNC port?
       - "7100:7100" # STF Port
       - "7102:7102" # Storage port
@@ -57,6 +61,7 @@ services:
     environment:
       RETHINKDB_PORT_28015_TCP: tcp://rethinkdb:28015
       RETHINKDB_ENV_DATABASE: stf
+      STF_LOCAL_APP_PORT: 7105
       STF_LOCAL_PORT: 7100
       STF_LOCAL_PUBLIC_IP: ${IP_ADDRESS}
       STF_LOCAL_PROVIDER_MIN_PORT: 7400
@@ -75,12 +80,13 @@ services:
       STF_LOCAL_STORAGE_PLUGIN_IMAGE_PORT: 7103
       STF_LOCAL_STORAGE_PLUGIN_APK_PORT: 7104
       STF_LOCAL_STORAGE_TYPE: "temp"
+    #  STF_LOCAL_AUTH_URL: http://${IP_ADDRESS}:7120/auth/mock
     restart: always
     networks:
       - "default"
     command: stf local
   
-    # Options:
+    # "stf local" Options:
     # -h, --help                   Show help.                         [boolean]
     # -V, --version                Show version.                      [boolean]
     # --adb-host                   The ADB server host.
@@ -170,5 +176,4 @@ services:
     # Each option can be be overwritten with an environment variable by converting the
     # option to uppercase, replacing dashes with underscores and prefixing it with
     # `STF_LOCAL_` (e.g. `STF_LOCAL_ALLOW_REMOTE`).
-
 
