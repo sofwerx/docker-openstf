@@ -33,16 +33,142 @@ services:
   
   stf-local:
     image: openstf/stf
-    links:
+    depends_on:
       - rethinkdb
+    links:
       - adbd
     ports:
-      - "7100:7100"
-      - "7110:7110"
-      - "7120:7120"
+      - "5900:5900" # Experimental VNC port?
+      - "7100:7100" # STF Port
+      - "7102:7102" # Storage port
+      - "7103:7103" # Storage plugin image port
+      - "7104:7104" # Storage plugin apk port
+      - "7105:7105" # App port
+      - "7106:7106" # API port
+      - "7110:7110" # Websocket port
+      - "7111:7111" # app-side ZeroMQ PULL
+      - "7112:7112" # app-side ZeroMQ PUB
+      - "7113:7113" # app-side ZeroMQ DEALER
+      - "7114:7114" # dev-side ZeroMQ PULL
+      - "7115:7115" # dev-side ZeroMQ PUB
+      - "7116:7116" # dev-side ZeroMQ DEALER
+      - "7120:7120" # Auth port
       - "7400-7500:7400-7500"
+    environment:
+      RETHINKDB_PORT_28015_TCP: tcp://rethinkdb:28015
+      RETHINKDB_ENV_DATABASE: stf
+      STF_LOCAL_PORT: 7100
+      STF_LOCAL_PUBLIC_IP: ${IP_ADDRESS}
+      STF_LOCAL_PROVIDER_MIN_PORT: 7400
+      STF_LOCAL_PROVIDER_MAX_PORT: 7400
+      STF_LOCAL_ADB_HOST: adbd
+      STF_LOCAL_ADB_PORT: 5037
+      STF_LOCAL_AUTH_SECRET: sofwerx
+      STF_LOCAL_AUTH_TYPE: mock
+      STF_LOCAL_BIND_APP_PULL: "tcp://0.0.0.0:7111"
+      STF_LOCAL_BIND_APP_PUB: "tcp://0.0.0.0:7112"
+      STF_LOCAL_BIND_APP_DEALER: "tcp://0.0.0.0:7113"
+      STF_LOCAL_BIND_DEV_PULL: "tcp://0.0.0.0:7114"
+      STF_LOCAL_BIND_DEV_PUB: "tcp://0.0.0.0:7115"
+      STF_LOCAL_BIND_DEV_DEALER: "tcp://0.0.0.0:7116"
+      STF_LOCAL_STORAGE_PORT: 7102
+      STF_LOCAL_STORAGE_PLUGIN_IMAGE_PORT: 7103
+      STF_LOCAL_STORAGE_PLUGIN_APK_PORT: 7104
+      STF_LOCAL_STORAGE_TYPE: "temp"
     restart: always
     networks:
       - "default"
-    command: stf local --public-ip ${IP_ADDRESS} --provider-min-port 7400 --provider-max-port 7500 --adb-host adbd
+    command: stf local
   
+    # Options:
+    # -h, --help                   Show help.                         [boolean]
+    # -V, --version                Show version.                      [boolean]
+    # --adb-host                   The ADB server host.
+    #                                           [string] [default: "127.0.0.1"]
+    # --adb-port                   The ADB server port.[number] [default: 5037]
+    # --allow-remote, -R           Whether to allow remote devices in STF. Highly
+    #                              unrecommended due to almost unbelievable slowness
+    #                              on the ADB side and duplicate device issues when
+    #                              used locally while having a cable connected at
+    #                              the same time.                     [boolean]
+    # --api-port                   The port the api unit should run at.
+    #                                                  [number] [default: 7106]
+    # --app-port                   The port the app unit should run at.
+    #                                                  [number] [default: 7105]
+    # --auth-options               JSON array of options to pass to the auth unit.
+    #                                                  [string] [default: "[]"]
+    # --auth-port                  The port the auth unit should run at.
+    #                                                  [number] [default: 7120]
+    # --auth-secret                The secret to use for auth JSON Web Tokens.
+    #                              Anyone who knows this token can freely enter the
+    #                              system if they want, so keep it safe.
+    #                                       [string] [default: "kute kittykat"]
+    # --auth-type                  The type of auth unit to start.
+    # [string] [choices: "mock", "ldap", "oauth2", "saml2", "openid"] [default:
+    #                                                                   "mock"]
+    # --auth-url, -a               URL to the auth unit.                    [string]
+    # --bind-app-dealer            The address to bind the app-side ZeroMQ DEALER
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7112"]
+    # --bind-app-pub               The address to bind the app-side ZeroMQ PUB
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7111"]
+    # --bind-app-pull              The address to bind the app-side ZeroMQ PULL
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7113"]
+    # --bind-dev-dealer            The address to bind the device-side ZeroMQ DEALER
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7115"]
+    # --bind-dev-pub               The address to bind the device-side ZeroMQ PUB
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7114"]
+    # --bind-dev-pull              The address to bind the device-side ZeroMQ PULL
+    #                              endpoint to.
+    #                                [string] [default: "tcp://127.0.0.1:7116"]
+    # --cleanup                    Attempt to reset the device between uses by
+    #                              uninstallingapps, resetting accounts and clearing
+    #                              caches. Does not do a perfect job currently.
+    #                              Negate with --no-cleanup.
+    #                                                 [boolean] [default: true]
+    # --group-timeout, -t          Timeout in seconds for automatic release of
+    #                              inactive devices.    [number] [default: 900]
+    # --lock-rotation              Whether to lock rotation when devices are being
+    #                              used. Otherwise changing device orientation may
+    #                              not always work due to sensitive sensors quickly
+    #                              or immediately reverting it back to the physical
+    #                              orientation.                            [boolean]
+    # --mute-master                Whether to mute master volume.
+    #                  [choices: "always", "inuse", "never"] [default: "never"]
+    # --port, -p, --poorxy-port    The port STF should run at.
+    #                                                  [number] [default: 7100]
+    # --provider                   An easily identifiable name for the UI and/or log
+    #                              output.   [string] [default: "93e99dc7d7cd"]
+    # --provider-max-port          Highest port number for device workers to use.
+    #                                                  [number] [default: 7700]
+    # --provider-min-port          Lowest port number for device workers to use.
+    #                                                  [number] [default: 7400]
+    # --public-ip                  The IP or hostname to use in URLs.
+    #                                           [string] [default: "localhost"]
+    # --serial                     Only use devices with these serial numbers.
+    #                                                                   [array]
+    # --storage-options            JSON array of options to pass to the storage
+    #                              unit.               [string] [default: "[]"]
+    # --storage-plugin-apk-port    The port the storage-plugin-apk unit should run
+    #                              at.                 [number] [default: 7104]
+    # --storage-plugin-image-port  The port the storage-plugin-image unit should run
+    #                              at.                 [number] [default: 7103]
+    # --storage-port               The port the storage unit should run at.
+    #                                                  [number] [default: 7102]
+    # --storage-type               The type of storage unit to start.
+    #                        [string] [choices: "temp", "s3"] [default: "temp"]
+    # --user-profile-url           URL to external user profile page   [string]
+    # --vnc-initial-size           The initial size to use for the experimental VNC
+    #                         server.             [string] [default: "600x800"]
+    # --websocket-port             The port the websocket unit should run at.
+    #                                                  [number] [default: 7110]
+    #
+    # Each option can be be overwritten with an environment variable by converting the
+    # option to uppercase, replacing dashes with underscores and prefixing it with
+    # `STF_LOCAL_` (e.g. `STF_LOCAL_ALLOW_REMOTE`).
+
+
