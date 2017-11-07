@@ -40,24 +40,24 @@ services:
       - rethinkdb
     links:
       - adbd
-    ports:
-      - "80:7105"
-      - "5900:5900" # Experimental VNC port?
-      - "7100:7100" # STF Port
-      - "7102:7102" # Storage port
-      - "7103:7103" # Storage plugin image port
-      - "7104:7104" # Storage plugin apk port
-      - "7105:7105" # App port
-      - "7106:7106" # API port
-      - "7110:7110" # Websocket port
-      - "7111:7111" # app-side ZeroMQ PULL
-      - "7112:7112" # app-side ZeroMQ PUB
-      - "7113:7113" # app-side ZeroMQ DEALER
-      - "7114:7114" # dev-side ZeroMQ PULL
-      - "7115:7115" # dev-side ZeroMQ PUB
-      - "7116:7116" # dev-side ZeroMQ DEALER
-      - "7120:7120" # Auth port
-      - "7400-7500:7400-7500"
+#    ports:
+#      - "80:7105"
+#      - "5900:5900" # Experimental VNC port?
+#      - "7100:7100" # STF Port
+#      - "7102:7102" # Storage port
+#      - "7103:7103" # Storage plugin image port
+#      - "7104:7104" # Storage plugin apk port
+#      - "7105:7105" # App port
+#      - "7106:7106" # API port
+#      - "7110:7110" # Websocket port
+#      - "7111:7111" # app-side ZeroMQ PULL
+#      - "7112:7112" # app-side ZeroMQ PUB
+#      - "7113:7113" # app-side ZeroMQ DEALER
+#      - "7114:7114" # dev-side ZeroMQ PULL
+#      - "7115:7115" # dev-side ZeroMQ PUB
+#      - "7116:7116" # dev-side ZeroMQ DEALER
+#      - "7120:7120" # Auth port
+#      - "7400-7500:7400-7500"
     environment:
       RETHINKDB_PORT_28015_TCP: tcp://rethinkdb:28015
       RETHINKDB_ENV_DATABASE: stf
