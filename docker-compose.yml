@@ -59,20 +59,20 @@ services:
       - "7120:7120" # Auth port
       - "7400-7500:7400-7500"
     environment:
-      BASIC_AUTH_USERNAME: openstf
-      BASIC_AUTH_PASSWORD: openstf
+#      BASIC_AUTH_USERNAME: openstf
+#      BASIC_AUTH_PASSWORD: openstf
+#      STF_LOCAL_AUTH_OPTIONS: '["--use-basic-auth"]' 
       RETHINKDB_PORT_28015_TCP: tcp://rethinkdb:28015
       RETHINKDB_ENV_DATABASE: stf
       STF_LOCAL_APP_PORT: 7105
-      STF_LOCAL_AUTH_OPTIONS: '["--use-basic-auth"]' 
       STF_LOCAL_PORT: 7100
       STF_LOCAL_PUBLIC_IP: ${IP_ADDRESS}
       STF_LOCAL_PROVIDER_MIN_PORT: 7400
       STF_LOCAL_PROVIDER_MAX_PORT: 7500
       STF_LOCAL_ADB_HOST: adbd
       STF_LOCAL_ADB_PORT: 5037
-      STF_LOCAL_AUTH_SECRET: sofwerx
-      STF_LOCAL_AUTH_TYPE: mock
+#      STF_LOCAL_AUTH_SECRET: sofwerx
+#      STF_LOCAL_AUTH_TYPE: mock
       STF_LOCAL_BIND_APP_PULL: "tcp://0.0.0.0:7111"
       STF_LOCAL_BIND_APP_PUB: "tcp://0.0.0.0:7112"
       STF_LOCAL_BIND_APP_DEALER: "tcp://0.0.0.0:7113"
