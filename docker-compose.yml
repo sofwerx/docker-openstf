@@ -59,9 +59,12 @@ services:
       - "7120:7120" # Auth port
       - "7400-7500:7400-7500"
     environment:
+      BASIC_AUTH_USERNAME: openstf
+      BASIC_AUTH_PASSWORD: openstf
       RETHINKDB_PORT_28015_TCP: tcp://rethinkdb:28015
       RETHINKDB_ENV_DATABASE: stf
       STF_LOCAL_APP_PORT: 7105
+      STF_LOCAL_AUTH_OPTIONS: '["--use-basic-auth"]' 
       STF_LOCAL_PORT: 7100
       STF_LOCAL_PUBLIC_IP: ${IP_ADDRESS}
       STF_LOCAL_PROVIDER_MIN_PORT: 7400
