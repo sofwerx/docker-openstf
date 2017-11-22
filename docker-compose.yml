@@ -28,20 +28,26 @@ services:
     image: sorccu/adb
     privileged: true
 ### Note: Ports do not need to be published external to docker network segment for `stf local` only
-#    ports:
-#      - "5037:5037"
+    ports:
+      - "5037:5037"
     restart: always
     volumes:
       - "/dev/bus/usb:/dev/bus/usb"
 
   stf-local:
     image: openstf/stf
-    depends_on:
-      - rethinkdb
-    links:
-      - adbd
+#    depends_on:
+#      - rethinkdb
+#    links:
+#      - adbd
+    environment:
+      - ADBD_PORT=tcp://172.18.0.1:5037
+      - ADBD_PORT_5037_TCP=tcp://172.18.0.1:5037
+      - ADBD_PORT_5037_TCP_ADDR=172.18.0.1
+      - ADBD_PORT_5037_TCP_PORT=5037
+      - ADBD_PORT_5037_TCP_PROTO=TCP
     ports:
-      - "80:7105"
+#      - "80:7105"
       - "5900:5900" # Experimental VNC port?
       - "7100:7100" # STF Port
       - "7102:7102" # Storage port
