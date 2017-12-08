@@ -2,8 +2,8 @@
 
 This is the docker-compose.yml for a stand-alone OpenSTF service.
 
-https://github.com/openstf/stf
-https://github.com/openstf/stf/blob/master/doc/DEPLOYMENT.md
+- https://github.com/openstf/stf
+- https://github.com/openstf/stf/blob/master/doc/DEPLOYMENT.md
 
 # Running:
 
