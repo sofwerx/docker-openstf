@@ -47,7 +47,6 @@ services:
       - ADBD_PORT_5037_TCP_PORT=5037
       - ADBD_PORT_5037_TCP_PROTO=TCP
     ports:
-#      - "80:7105"
       - "5900:5900" # Experimental VNC port?
       - "7100:7100" # STF Port
       - "7102:7102" # Storage port
