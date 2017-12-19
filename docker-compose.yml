@@ -1,9 +1,5 @@
 version: '2'
 
-networks: 
-  default:
-    driver: bridge
-
 volumes:
   rethink-data:
     driver: local
@@ -20,8 +16,6 @@ services:
     restart: always
     volumes:
       - "rethink-data:/data"
-    networks:
-      - "default"
     command: "rethinkdb --bind all --cache-size 2048"
   
   adbd:
@@ -91,8 +85,6 @@ services:
       STF_LOCAL_WEBSOCKET_PORT: 7110
     #  STF_LOCAL_AUTH_URL: http://${IP_ADDRESS}:7120/auth/mock
     restart: always
-    networks:
-      - "default"
     command: stf local
   
     # "stf local" Options:
